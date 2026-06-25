@@ -77,12 +77,12 @@ namespace polyfem::solver
 			}
 			catch (const std::runtime_error &e)
 			{
-				std::string err_msg = e.what();
-				// if the nonlinear solve fails due to invalid energy at the current solution, changing the weights would not help
-				if (err_msg.find("f(x) is nan or inf; stopping") != std::string::npos)
-					log_and_throw_error("Failed to solve with AL; f(x) is nan or inf");
-				if (err_msg.find("Reached iteration limit") != std::string::npos)
-					log_and_throw_error("Reached iteration limit in AL");
+				// std::string err_msg = e.what();
+				// // if the nonlinear solve fails due to invalid energy at the current solution, changing the weights would not help
+				// if (err_msg.find("f(x) is nan or inf; stopping") != std::string::npos)
+				// 	log_and_throw_error("Failed to solve with AL; f(x) is nan or inf");
+				// if (err_msg.find("Reached iteration limit") != std::string::npos)
+				// 	log_and_throw_error("Reached iteration limit in AL");
 			}
 
 			sol = tmp_sol;

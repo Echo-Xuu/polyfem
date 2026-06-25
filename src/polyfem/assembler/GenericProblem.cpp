@@ -529,7 +529,26 @@ namespace polyfem
 			{
 				// boundary_ids_.clear();
 				int offset = boundary_ids_.size();
-				std::vector<json> j_boundary = flatten_ids(params["dirichlet_boundary"]);
+				std::vector<json> j_boundary_raw = flatten_ids(params["dirichlet_boundary"]);
+
+				// Expand any sidecar .json files inline before processing
+				std::vector<json> j_boundary;
+				for (const auto &entry : j_boundary_raw)
+				{
+					if (entry.is_string())
+					{
+						const std::string path = resolve_path(entry, params["root_path"]);
+						if (std::filesystem::path(path).extension() == ".json")
+						{
+							std::ifstream f(path);
+							json sidecar = json::parse(f);
+							for (const auto &e : sidecar)
+								j_boundary.push_back(e);
+							continue;
+						}
+					}
+					j_boundary.push_back(entry);
+				}
 
 				boundary_ids_.resize(offset + j_boundary.size());
 				displacements_.resize(offset + j_boundary.size());
@@ -538,14 +557,11 @@ namespace polyfem
 				{
 					if (j_boundary[i - offset].is_string())
 					{
+						// Only nodal matrix files reach here now (non-.json strings)
 						const std::string path = resolve_path(j_boundary[i - offset], params["root_path"]);
-						if (!std::filesystem::is_regular_file(path))
-							log_and_throw_error("unable to open {} file", path);
-
 						Eigen::MatrixXd tmp;
 						io::read_matrix(path, tmp);
 						nodal_dirichlet_mat_.emplace_back(tmp);
-
 						continue;
 					}
 
@@ -598,15 +614,18 @@ namespace polyfem
 						}
 					}
 
-					if (j_boundary[i - offset]["interpolation"].is_array())
+					if (j_boundary[i - offset].contains("interpolation"))
 					{
-						for (int ii = 0; ii < j_boundary[i - offset]["interpolation"].size(); ++ii)
-							displacements_[i].interpolation.push_back(Interpolation::build(j_boundary[i - offset]["interpolation"][ii]));
-					}
-					else
-						displacements_[i].interpolation.push_back(Interpolation::build(j_boundary[i - offset]["interpolation"]));
+						if (j_boundary[i - offset]["interpolation"].is_array())
+						{
+							for (int ii = 0; ii < j_boundary[i - offset]["interpolation"].size(); ++ii)
+								displacements_[i].interpolation.push_back(Interpolation::build(j_boundary[i - offset]["interpolation"][ii]));
+						}
+						else
+							displacements_[i].interpolation.push_back(Interpolation::build(j_boundary[i - offset]["interpolation"]));
 
-					nodal_dirichlet_[current_id].interpolation = displacements_[i].interpolation;
+						nodal_dirichlet_[current_id].interpolation = displacements_[i].interpolation;
+					}
 				}
 			}
 
@@ -1247,7 +1266,26 @@ namespace polyfem
 			{
 				// boundary_ids_.clear();
 				const int offset = boundary_ids_.size();
-				std::vector<json> j_boundary = flatten_ids(params["dirichlet_boundary"]);
+				std::vector<json> j_boundary_raw = flatten_ids(params["dirichlet_boundary"]);
+
+				// Expand any sidecar .json files inline before processing
+				std::vector<json> j_boundary;
+				for (const auto &entry : j_boundary_raw)
+				{
+					if (entry.is_string())
+					{
+						const std::string path = resolve_path(entry, params["root_path"]);
+						if (std::filesystem::path(path).extension() == ".json")
+						{
+							std::ifstream f(path);
+							json sidecar = json::parse(f);
+							for (const auto &e : sidecar)
+								j_boundary.push_back(e);
+							continue;
+						}
+					}
+					j_boundary.push_back(entry);
+				}
 
 				boundary_ids_.resize(offset + j_boundary.size());
 				dirichlet_.resize(offset + j_boundary.size());
