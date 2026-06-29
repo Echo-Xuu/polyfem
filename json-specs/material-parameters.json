@@ -509,7 +509,10 @@
         "optional": [
             "id",
             "rho",
-            "fiber_direction"
+            "fiber_direction",
+            "kappa",
+            "k_chi",
+            "e4_center"
         ],
         "doc": "Material Parameters"
     },
@@ -665,6 +668,25 @@
         "type": "include",
         "spec_file": "value-no.json",
         "doc": "Second Parameter for HGOFiber"
+    },
+    {
+        "pointer": "/kappa",
+        "type": "include",
+        "spec_file": "value0.json",
+        "default": 0,
+        "doc": "Fiber dispersion parameter (kappa) for HGOFiber, in [0, 1/d]; absent defaults to 0 (perfectly aligned fibers)"
+    },
+    {
+        "pointer": "/k_chi",
+        "type": "float",
+        "default": 100.0,
+        "doc": "Logistic smoothness of the HGOFiber tension/compression switch X(E4); absent defaults to 100"
+    },
+    {
+        "pointer": "/e4_center",
+        "type": "float",
+        "default": 1.0,
+        "doc": "Logistic center of the HGOFiber switch X(E4); manuscript = 1.0, physical distension/compression boundary = 0.0"
     },
     {
         "pointer": "/alphas",

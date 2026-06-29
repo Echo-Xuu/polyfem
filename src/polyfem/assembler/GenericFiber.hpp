@@ -91,6 +91,27 @@ namespace polyfem::assembler
 			// return tmp;
 		}
 
+		// Full first invariant I1 = tr(C) = tr(F^T F) = sum_ij F_ij^2  (NOT isochoric)
+		template <typename T>
+		T I1(const DefGradMatrix<T> &def_grad) const
+		{
+			T res = T(0);
+			for (int i = 0; i < def_grad.rows(); ++i)
+				for (int j = 0; j < def_grad.cols(); ++j)
+					res += def_grad(i, j) * def_grad(i, j);
+			return res;
+		}
+
+		// Full fourth invariant I4 = a0 . C a0  (isocoric flag = false => no J^{-2/3} scaling)
+		template <typename T>
+		T I4(const RowVectorNd &p,
+			 const double t,
+			 const int el_id,
+			 const DefGradMatrix<T> &def_grad) const
+		{
+			return I4Bar_generic(p, t, el_id, def_grad, /*normalize=*/false, /*isocoric=*/false);
+		}
+
 		FiberDirection fiber_direction_;
 	};
 } // namespace polyfem::assembler
