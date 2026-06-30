@@ -588,6 +588,37 @@
         "doc": "Entries of fiber direction"
     },
     {
+        "pointer": "/fiber_direction",
+        "type": "object",
+        "required": [
+            "type",
+            "path"
+        ],
+        "optional": [
+            "field"
+        ],
+        "doc": "Per-element fiber direction read from a file (one vector per element), as an alternative to the constant/expression list form"
+    },
+    {
+        "pointer": "/fiber_direction/type",
+        "type": "string",
+        "options": [
+            "per_element_file"
+        ],
+        "doc": "Fiber direction source kind; 'per_element_file' reads one cell vector per element from a VTK file"
+    },
+    {
+        "pointer": "/fiber_direction/path",
+        "type": "string",
+        "doc": "Path to the per-element fiber file (legacy ASCII VTK), resolved relative to the input JSON root"
+    },
+    {
+        "pointer": "/fiber_direction/field",
+        "type": "string",
+        "default": "FIB_DIR1",
+        "doc": "Name of the CELL_DATA VECTORS array to read from the fiber file"
+    },
+    {
         "pointer": "/rho",
         "type": "include",
         "spec_file": "value1.json",
