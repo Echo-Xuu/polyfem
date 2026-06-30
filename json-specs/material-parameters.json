@@ -511,8 +511,7 @@
             "rho",
             "fiber_direction",
             "kappa",
-            "k_chi",
-            "e4_center"
+            "k_chi"
         ],
         "doc": "Material Parameters"
     },
@@ -681,12 +680,6 @@
         "type": "float",
         "default": 100.0,
         "doc": "Logistic smoothness of the HGOFiber tension/compression switch X(E4); absent defaults to 100"
-    },
-    {
-        "pointer": "/e4_center",
-        "type": "float",
-        "default": 1.0,
-        "doc": "Logistic center of the HGOFiber switch X(E4); manuscript = 1.0, physical distension/compression boundary = 0.0"
     },
     {
         "pointer": "/alphas",

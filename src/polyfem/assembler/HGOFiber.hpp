@@ -35,11 +35,13 @@ namespace polyfem::assembler
 			const T E4 = kappa * i1 + (1.0 - d * kappa) * i4 - 1.0;
 
 			// Smooth distension/compression switch X(E4) (manuscript Eq. 5), replaces
-			// the hard tension-only cutoff so the energy is C-infinity.
-			// NOTE: the manuscript centers the logistic at E4 = 1 (e4_center default).
-			// Physically the distension/compression boundary is E4 = 0; set the JSON
-			// key "e4_center": 0.0 to switch there. See accompanying write-up.
-			const T chi = 1.0 / (1.0 + exp(-k_chi_ * (E4 - e4_center_)));
+			// the hard tension-only cutoff so the energy is C-infinity. The logistic is
+			// centered at E4 = 0, the physical distension/compression boundary (at the
+			// unloaded state I1=d, I4=1 => E4=0). The published "-1" inside the switch
+			// was a transcription carry-over from the I4-based switch H(I4-1) of the
+			// source models (where I4=1 is the unloaded value) and has been confirmed
+			// by the authors as an error; the correct, fits-consistent center is 0.
+			const T chi = 1.0 / (1.0 + exp(-k_chi_ * E4));
 
 			return (k1 / (2.0 * k2)) * chi * (exp(k2 * E4 * E4) - 1.0);
 		}
@@ -49,6 +51,5 @@ namespace polyfem::assembler
 		GenericMatParam k2_;     // exp. stiffening   (manuscript b_f)
 		GenericMatParam kappa_;  // fiber dispersion  kappa  (in [0, 1/d])
 		double k_chi_ = 100.0;     // logistic smoothness k_X; manuscript fixes 100
-		double e4_center_ = 1.0;   // logistic center; manuscript = 1.0, physical boundary = 0.0
 	};
 } // namespace polyfem::assembler

@@ -17,7 +17,6 @@ namespace polyfem::assembler
 		k2_.add_multimaterial(index, params, "", root_path);
 		kappa_.add_multimaterial(index, params, "", root_path); // dimensionless; absent => 0
 		k_chi_ = params.value("k_chi", 100.0);                  // absent => 100 (manuscript)
-		e4_center_ = params.value("e4_center", 1.0);            // absent => 1.0 (manuscript)
 	}
 
 	std::map<std::string, Assembler::ParamFunc> HGOFiber::parameters() const

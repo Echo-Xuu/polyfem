@@ -102,14 +102,17 @@ namespace polyfem::assembler
 			return res;
 		}
 
-		// Full fourth invariant I4 = a0 . C a0  (isocoric flag = false => no J^{-2/3} scaling)
+		// Full fourth invariant I4 = a0 . C a0 with a0 normalized to unit length
+		// (isocoric flag = false => full C, no J^{-2/3} scaling). normalize=true makes
+		// I4 independent of the fiber-direction vector's magnitude, so per-element fiber
+		// inputs need not be pre-normalized; the GOH I4 = a0.C.a0 requires a unit a0.
 		template <typename T>
 		T I4(const RowVectorNd &p,
 			 const double t,
 			 const int el_id,
 			 const DefGradMatrix<T> &def_grad) const
 		{
-			return I4Bar_generic(p, t, el_id, def_grad, /*normalize=*/false, /*isocoric=*/false);
+			return I4Bar_generic(p, t, el_id, def_grad, /*normalize=*/true, /*isocoric=*/false);
 		}
 
 		FiberDirection fiber_direction_;
